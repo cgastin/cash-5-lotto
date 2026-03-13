@@ -1,0 +1,116 @@
+[
+  {
+    "prediction_date": "2026-03-13T00:00:00Z",
+    "version": 1,
+    "candidates": [
+      {
+        "numbers": [
+          10,
+          13,
+          19,
+          24,
+          35
+        ],
+        "score": 0.7307762558040086,
+        "rank": 1,
+        "features_used": {
+          "composite_score": 0.7307762558040086,
+          "consecutive_penalty": 0,
+          "distribution_score": 1,
+          "frequency_score": 0.9546448087431694,
+          "overdue_score": 0.0016239316239316237,
+          "recency_score": 0.85,
+          "sum_alignment": 0.7374292774925295
+        },
+        "explanation": "Combination 10-13-19-24-35 ranked #1 based on statistical analysis of 8696 historical draws. These numbers show high all-time frequency (score: 0.95). They have appeared frequently in recent draws (recency: 0.85). The combination has a well-balanced odd/even and low/mid/high distribution. DISCLAIMER: Lottery draws are random. This statistical ranking does not predict or guarantee any outcome."
+      },
+      {
+        "numbers": [
+          1,
+          14,
+          19,
+          24,
+          32
+        ],
+        "score": 0.7182114333753679,
+        "rank": 2,
+        "features_used": {
+          "composite_score": 0.7182114333753679,
+          "consecutive_penalty": 0,
+          "distribution_score": 1,
+          "frequency_score": 0.9420765027322404,
+          "overdue_score": 0.0012820512820512823,
+          "recency_score": 0.775,
+          "sum_alignment": 1
+        },
+        "explanation": "Combination 1-14-19-24-32 ranked #2 based on statistical analysis of 8696 historical draws. These numbers show high all-time frequency (score: 0.94). They have appeared frequently in recent draws (recency: 0.78). The combination has a well-balanced odd/even and low/mid/high distribution. DISCLAIMER: Lottery draws are random. This statistical ranking does not predict or guarantee any outcome."
+      },
+      {
+        "numbers": [
+          6,
+          14,
+          19,
+          21,
+          35
+        ],
+        "score": 0.714023446168699,
+        "rank": 3,
+        "features_used": {
+          "composite_score": 0.714023446168699,
+          "consecutive_penalty": 0,
+          "distribution_score": 1,
+          "frequency_score": 0.9185792349726776,
+          "overdue_score": 0.002307692307692308,
+          "recency_score": 0.8,
+          "sum_alignment": 0.8806496715875134
+        },
+        "explanation": "Combination 6-14-19-21-35 ranked #3 based on statistical analysis of 8696 historical draws. These numbers show high all-time frequency (score: 0.92). They have appeared frequently in recent draws (recency: 0.80). The combination has a well-balanced odd/even and low/mid/high distribution. DISCLAIMER: Lottery draws are random. This statistical ranking does not predict or guarantee any outcome."
+      },
+      {
+        "numbers": [
+          1,
+          10,
+          14,
+          30,
+          35
+        ],
+        "score": 0.7053118957545188,
+        "rank": 4,
+        "features_used": {
+          "composite_score": 0.7053118957545188,
+          "consecutive_penalty": 0,
+          "distribution_score": 1,
+          "frequency_score": 0.9502732240437158,
+          "overdue_score": 0.0016239316239316237,
+          "recency_score": 0.725,
+          "sum_alignment": 1
+        },
+        "explanation": "Combination 1-10-14-30-35 ranked #4 based on statistical analysis of 8696 historical draws. These numbers show high all-time frequency (score: 0.95). They have appeared frequently in recent draws (recency: 0.72). The combination has a well-balanced odd/even and low/mid/high distribution. DISCLAIMER: Lottery draws are random. This statistical ranking does not predict or guarantee any outcome."
+      },
+      {
+        "numbers": [
+          9,
+          13,
+          19,
+          30,
+          32
+        ],
+        "score": 0.7052530575585836,
+        "rank": 5,
+        "features_used": {
+          "composite_score": 0.7052530575585836,
+          "consecutive_penalty": 0,
+          "distribution_score": 1,
+          "frequency_score": 0.9524590163934427,
+          "overdue_score": 0.0010256410256410256,
+          "recency_score": 0.775,
+          "sum_alignment": 0.689689146127535
+        },
+        "explanation": "Combination 9-13-19-30-32 ranked #5 based on statistical analysis of 8696 historical draws. These numbers show high all-time frequency (score: 0.95). They have appeared frequently in recent draws (recency: 0.78). The combination has a well-balanced odd/even and low/mid/high distribution. DISCLAIMER: Lottery draws are random. This statistical ranking does not predict or guarantee any outcome."
+      }
+    ],
+    "model_strategy": "statistical",
+    "model_version": "v1",
+    "generated_at": "2026-03-13T06:34:32.427497Z"
+  }
+]

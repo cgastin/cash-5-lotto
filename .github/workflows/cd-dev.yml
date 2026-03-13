@@ -1,0 +1,113 @@
+name: CD Dev
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write   # Required for OIDC token exchange
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  TF_WORKING_DIR: terraform/environments/dev
+  PREFIX: cash5-dev
+
+jobs:
+  deploy:
+    name: Build + Deploy (dev)
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Run tests
+        run: go test ./... -count=1
+
+      # ── Build Lambda binaries ─────────────────────────────────────────
+      # Each function is compiled separately so binaries stay independent.
+      # GOARCH=arm64 matches the arm64 architecture declared in the Lambda module.
+      - name: Build api-handler
+        run: |
+          GOOS=linux GOARCH=arm64 go build -o bootstrap ./cmd/api-handler
+          zip api-handler.zip bootstrap
+          rm bootstrap
+
+      - name: Build ingestion-job
+        run: |
+          GOOS=linux GOARCH=arm64 go build -o bootstrap ./cmd/ingestion-job
+          zip ingestion-job.zip bootstrap
+          rm bootstrap
+
+      - name: Build reconciliation-job
+        run: |
+          GOOS=linux GOARCH=arm64 go build -o bootstrap ./cmd/reconciliation-job
+          zip reconciliation-job.zip bootstrap
+          rm bootstrap
+
+      # ── AWS credentials via OIDC ──────────────────────────────────────
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # ── Upload artifacts to S3 ────────────────────────────────────────
+      - name: Upload Lambda artifacts to S3
+        run: |
+          BUCKET="${{ env.PREFIX }}-model-artifacts"
+          aws s3 cp api-handler.zip      s3://${BUCKET}/lambda/api-handler/latest.zip
+          aws s3 cp ingestion-job.zip    s3://${BUCKET}/lambda/ingestion-job/latest.zip
+          aws s3 cp reconciliation-job.zip s3://${BUCKET}/lambda/reconciliation-job/latest.zip
+
+      # ── Terraform ─────────────────────────────────────────────────────
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.5"
+
+      - name: Terraform Init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init
+
+      - name: Terraform Validate
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform plan -out=tfplan -input=false 2>&1 | tee plan.txt
+
+      - name: Post plan to job summary
+        run: |
+          echo "## Terraform Plan (dev)" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat "${{ env.TF_WORKING_DIR }}/plan.txt" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Terraform Apply (auto-approve for dev)
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform apply -auto-approve -input=false tfplan
+
+      # ── Hot-swap Lambda code ──────────────────────────────────────────
+      # Ensures new code is live even if Terraform detects no infra changes.
+      - name: Update Lambda function code
+        run: |
+          BUCKET="${{ env.PREFIX }}-model-artifacts"
+          for FN in api-handler ingestion-job reconciliation-job; do
+            aws lambda update-function-code \
+              --function-name "${{ env.PREFIX }}-${FN}" \
+              --s3-bucket "${BUCKET}" \
+              --s3-key "lambda/${FN}/latest.zip" \
+              --architectures arm64 \
+              --no-cli-pager
+          done
